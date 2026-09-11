@@ -1,0 +1,37 @@
+name: Registry consumer validation
+
+on:
+  pull_request:
+    paths:
+      - 'validation/consumer/**'
+      - '.github/workflows/consumer-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'validation/consumer/**'
+      - '.github/workflows/consumer-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  consumer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: validation/consumer
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: validation/consumer/package-lock.json
+      - run: npm ci
+      - run: npm ls @personal-library/react-native-components expo react react-native --depth=0
+      - run: npx expo-doctor
+      - run: npx tsc --noEmit
+      - run: npx expo lint
+      - run: npm test -- --runInBand
+      - run: git diff --check
