@@ -1,0 +1,5163 @@
+{
+  "components": {
+    "schemas": {
+      "CaseOperatorSummaryResponse": {
+        "description": "Non-sensitive operator identity embedded in custody case responses.",
+        "properties": {
+          "firstName": {
+            "example": "Jordan",
+            "type": "string"
+          },
+          "id": {
+            "example": "9a3b8bf4-1d96-4a1e-810e-5a2f8b6ee2b1",
+            "format": "uuid",
+            "type": "string"
+          },
+          "lastName": {
+            "example": "Reed",
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "ADMIN",
+              "CASE_MANAGER",
+              "EVIDENCE_OFFICER",
+              "AUDITOR"
+            ],
+            "example": "CASE_MANAGER",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED",
+              "DISABLED"
+            ],
+            "example": "ACTIVE",
+            "type": "string"
+          },
+          "username": {
+            "example": "case.manager",
+            "type": "string"
+          }
+        },
+        "required": [
+          "firstName",
+          "id",
+          "lastName",
+          "role",
+          "status",
+          "username"
+        ],
+        "type": "object"
+      },
+      "CasePageResponse": {
+        "description": "Deterministically ordered page of custody cases accessible to the caller.",
+        "properties": {
+          "content": {
+            "items": {
+              "$ref": "#/components/schemas/CaseResponse"
+            },
+            "type": "array"
+          },
+          "page": {
+            "example": 0,
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "size": {
+            "example": 20,
+            "format": "int32",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "totalElements": {
+            "example": 1,
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "totalPages": {
+            "example": 1,
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "content",
+          "page",
+          "size",
+          "totalElements",
+          "totalPages"
+        ],
+        "type": "object"
+      },
+      "CaseResponse": {
+        "description": "Custody case representation without persistence locking metadata.",
+        "properties": {
+          "authorityName": {
+            "example": "Court of Rome",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "closedAt": {
+            "description": "Closure time; null while the case is OPEN.",
+            "example": "2026-07-30T10:20:40.654321Z",
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "createdAt": {
+            "example": "2026-07-29T08:15:30.123456Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/CaseOperatorSummaryResponse"
+          },
+          "description": {
+            "example": "Device collected under warrant 2026-0142.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "externalReference": {
+            "example": "WARRANT-2026-0142",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "example": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+            "format": "uuid",
+            "type": "string"
+          },
+          "location": {
+            "example": "Evidence room A",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "priority": {
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "CRITICAL"
+            ],
+            "example": "HIGH",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ],
+            "example": "OPEN",
+            "type": "string"
+          },
+          "title": {
+            "example": "Mobile device seizure",
+            "type": "string"
+          },
+          "updatedAt": {
+            "example": "2026-07-29T08:15:30.123456Z",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "authorityName",
+          "closedAt",
+          "createdAt",
+          "createdBy",
+          "description",
+          "externalReference",
+          "id",
+          "location",
+          "priority",
+          "status",
+          "title",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "CreateCaseRequest": {
+        "additionalProperties": false,
+        "description": "Metadata for a new custody case. Unknown properties are rejected.",
+        "properties": {
+          "authorityName": {
+            "description": "Optional authority name; blank values normalize to null and length is validated after trimming.",
+            "example": "Court of Rome",
+            "maxLength": 200,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "description": "Optional description; blank values normalize to null and length is validated after trimming.",
+            "example": "Device collected under warrant 2026-0142.",
+            "maxLength": 2000,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "externalReference": {
+            "description": "Optional external reference; blank values normalize to null and length is validated after trimming.",
+            "example": "WARRANT-2026-0142",
+            "maxLength": 200,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "location": {
+            "description": "Optional location; blank values normalize to null and length is validated after trimming.",
+            "example": "Evidence room A",
+            "maxLength": 300,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "priority": {
+            "description": "Initial case priority.",
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "CRITICAL"
+            ],
+            "example": "HIGH",
+            "type": "string"
+          },
+          "title": {
+            "description": "Title; validated after trimming leading and trailing whitespace.",
+            "example": "Mobile device seizure",
+            "maxLength": 200,
+            "minLength": 3,
+            "type": "string"
+          }
+        },
+        "required": [
+          "priority",
+          "title"
+        ],
+        "type": "object"
+      },
+      "CreateEvidenceRequest": {
+        "additionalProperties": false,
+        "description": "Strict JSON metadata part. Unknown properties and duplicate JSON keys are rejected.",
+        "properties": {
+          "acquiredAt": {
+            "description": "Optional acquisition instant; it cannot be later than evidence creation.",
+            "example": "2026-07-29T09:30:00Z",
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "acquisitionLocation": {
+            "description": "Optional acquisition location; trimmed and normalized from blank to null.",
+            "example": "Forensics laboratory A",
+            "maxLength": 300,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "acquisitionMethod": {
+            "description": "Typed acquisition method.",
+            "enum": [
+              "PHYSICAL",
+              "LOGICAL",
+              "EXPORT",
+              "CAPTURE",
+              "MANUAL_UPLOAD",
+              "OTHER",
+              "UNKNOWN"
+            ],
+            "example": "LOGICAL",
+            "type": "string"
+          },
+          "acquisitionNotes": {
+            "description": "Optional acquisition notes; trimmed and normalized from blank to null.",
+            "example": "Airplane mode enabled before acquisition.",
+            "maxLength": 2000,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "acquisitionToolName": {
+            "description": "Optional acquisition tool name; trimmed and normalized from blank to null.",
+            "example": "Example Extractor",
+            "maxLength": 200,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "acquisitionToolVersion": {
+            "description": "Optional acquisition tool version; trimmed and normalized from blank to null.",
+            "example": "1.2.3",
+            "maxLength": 100,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "description": "Optional description; trimmed and normalized from blank to null.",
+            "example": "Full logical acquisition of the seized handset.",
+            "maxLength": 2000,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "initialHolderId": {
+            "description": "Active eligible case member who receives initial custody.",
+            "example": "b32ecaa9-8c4c-43d7-bdc0-28f9e38f3c37",
+            "format": "uuid",
+            "type": "string"
+          },
+          "referenceTag": {
+            "description": "Optional per-case reference tag; trimmed, uppercased and validated after normalization. Blank values become null.",
+            "example": "PHONE-2026-0042",
+            "maxLength": 64,
+            "pattern": "[A-Z0-9][A-Z0-9._-]{0,63}",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceDescription": {
+            "description": "Optional source description; trimmed and normalized from blank to null.",
+            "example": "Seized Android handset",
+            "maxLength": 500,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceLogicalIdentifier": {
+            "description": "Optional logical source identifier; trimmed and normalized from blank to null.",
+            "example": "device:userdata",
+            "maxLength": 300,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceManufacturer": {
+            "description": "Optional source manufacturer; trimmed and normalized from blank to null.",
+            "example": "Example Mobile",
+            "maxLength": 100,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceModel": {
+            "description": "Optional source model; trimmed and normalized from blank to null.",
+            "example": "Model X",
+            "maxLength": 100,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceSerialNumber": {
+            "description": "Optional source serial number; trimmed and normalized from blank to null.",
+            "example": "SN-000042",
+            "maxLength": 200,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceType": {
+            "description": "Typed source category.",
+            "enum": [
+              "DEVICE",
+              "FILESYSTEM",
+              "REMOVABLE_MEDIA",
+              "CLOUD_SERVICE",
+              "NETWORK_CAPTURE",
+              "EMAIL",
+              "DATABASE",
+              "OTHER",
+              "UNKNOWN"
+            ],
+            "example": "DEVICE",
+            "type": "string"
+          },
+          "title": {
+            "description": "Evidence title; validated after trimming leading and trailing whitespace.",
+            "example": "Forensic mobile image",
+            "maxLength": 200,
+            "minLength": 3,
+            "type": "string"
+          }
+        },
+        "required": [
+          "acquisitionMethod",
+          "initialHolderId",
+          "sourceType",
+          "title"
+        ],
+        "type": "object"
+      },
+      "CreateOperatorRequest": {
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "firstName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "lastName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "ADMIN",
+              "CASE_MANAGER",
+              "EVIDENCE_OFFICER",
+              "AUDITOR"
+            ],
+            "type": "string"
+          },
+          "username": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "firstName",
+          "lastName",
+          "password",
+          "role",
+          "username"
+        ],
+        "type": "object"
+      },
+      "CurrentOperatorResponse": {
+        "properties": {
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "ADMIN",
+              "CASE_MANAGER",
+              "EVIDENCE_OFFICER",
+              "AUDITOR"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED",
+              "DISABLED"
+            ],
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CustodyChainVerificationResponse": {
+        "properties": {
+          "actualValue": {
+            "type": "string"
+          },
+          "brokenAtEventId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "brokenAtSequenceNumber": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "calculatedHeadHash": {
+            "type": "string"
+          },
+          "checkedEvents": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "evidenceId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "expectedValue": {
+            "type": "string"
+          },
+          "loadedEventCount": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "reason": {
+            "enum": [
+              "EMPTY_CHAIN",
+              "CHAIN_LENGTH_MISMATCH",
+              "CASE_MISMATCH",
+              "EVIDENCE_MISMATCH",
+              "SEQUENCE_GAP",
+              "GENESIS_MISMATCH",
+              "PREVIOUS_HASH_MISMATCH",
+              "UNSUPPORTED_HASH_VERSION",
+              "UNSUPPORTED_PAYLOAD_VERSION",
+              "INVALID_PAYLOAD",
+              "EVENT_HASH_MISMATCH",
+              "CHAIN_HEAD_MISMATCH"
+            ],
+            "type": "string"
+          },
+          "storedEventCount": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "storedHeadHash": {
+            "type": "string"
+          },
+          "valid": {
+            "type": "boolean"
+          },
+          "verifiedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CustodyEventDetailResponse": {
+        "properties": {
+          "actorRole": {
+            "enum": [
+              "ADMIN",
+              "CASE_MANAGER",
+              "EVIDENCE_OFFICER",
+              "AUDITOR"
+            ],
+            "type": "string"
+          },
+          "caseId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "eventHash": {
+            "type": "string"
+          },
+          "eventType": {
+            "enum": [
+              "EVIDENCE_REGISTERED",
+              "CUSTODY_TRANSFERRED",
+              "METADATA_UPDATED",
+              "INTEGRITY_VERIFIED",
+              "EVIDENCE_SEALED",
+              "EVIDENCE_RELEASED"
+            ],
+            "type": "string"
+          },
+          "evidenceId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "hashVersion": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "occurredAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "operatorId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/CustodyEventPayload"
+          },
+          "payloadVersion": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "previousHash": {
+            "type": "string"
+          },
+          "sequenceNumber": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "CustodyEventPageResponse": {
+        "properties": {
+          "content": {
+            "items": {
+              "$ref": "#/components/schemas/CustodyEventSummaryResponse"
+            },
+            "type": "array"
+          },
+          "page": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "size": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalElements": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalPages": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "CustodyEventPayload": {
+        "description": "Frozen typed custody-event payload selected by eventType and payloadVersion.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/EvidenceRegisteredPayload"
+          },
+          {
+            "$ref": "#/components/schemas/CustodyTransferredPayload"
+          },
+          {
+            "$ref": "#/components/schemas/MetadataUpdatedPayload"
+          },
+          {
+            "$ref": "#/components/schemas/IntegrityVerifiedPayload"
+          },
+          {
+            "$ref": "#/components/schemas/EvidenceSealedPayload"
+          },
+          {
+            "$ref": "#/components/schemas/EvidenceReleasedPayload"
+          }
+        ]
+      },
+      "CustodyEventSummaryResponse": {
+        "properties": {
+          "actorRole": {
+            "enum": [
+              "ADMIN",
+              "CASE_MANAGER",
+              "EVIDENCE_OFFICER",
+              "AUDITOR"
+            ],
+            "type": "string"
+          },
+          "caseId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "eventHash": {
+            "type": "string"
+          },
+          "eventType": {
+            "enum": [
+              "EVIDENCE_REGISTERED",
+              "CUSTODY_TRANSFERRED",
+              "METADATA_UPDATED",
+              "INTEGRITY_VERIFIED",
+              "EVIDENCE_SEALED",
+              "EVIDENCE_RELEASED"
+            ],
+            "type": "string"
+          },
+          "evidenceId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "hashVersion": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "occurredAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "operatorId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "payloadVersion": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "previousHash": {
+            "type": "string"
+          },
+          "sequenceNumber": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "CustodyTransferredPayload": {
+        "properties": {
+          "newHolderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "previousHolderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "EvidenceMetadataSnapshot": {
+        "properties": {
+          "acquiredAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "acquisitionLocation": {
+            "type": "string"
+          },
+          "acquisitionMethod": {
+            "enum": [
+              "PHYSICAL",
+              "LOGICAL",
+              "EXPORT",
+              "CAPTURE",
+              "MANUAL_UPLOAD",
+              "OTHER",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "acquisitionNotes": {
+            "type": "string"
+          },
+          "acquisitionToolName": {
+            "type": "string"
+          },
+          "acquisitionToolVersion": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "sourceDescription": {
+            "type": "string"
+          },
+          "sourceLogicalIdentifier": {
+            "type": "string"
+          },
+          "sourceManufacturer": {
+            "type": "string"
+          },
+          "sourceModel": {
+            "type": "string"
+          },
+          "sourceSerialNumber": {
+            "type": "string"
+          },
+          "sourceType": {
+            "enum": [
+              "DEVICE",
+              "FILESYSTEM",
+              "REMOVABLE_MEDIA",
+              "CLOUD_SERVICE",
+              "NETWORK_CAPTURE",
+              "EMAIL",
+              "DATABASE",
+              "OTHER",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "EvidenceOperationResponse": {
+        "description": "Result of an operational custody command: the complete evidence state and the appended custody event summary.",
+        "properties": {
+          "eventSummary": {
+            "$ref": "#/components/schemas/CustodyEventSummaryResponse"
+          },
+          "evidence": {
+            "$ref": "#/components/schemas/EvidenceResponse"
+          }
+        },
+        "type": "object"
+      },
+      "EvidenceOperatorSummaryResponse": {
+        "description": "Non-sensitive current operator identity embedded in evidence responses.",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "ADMIN",
+              "CASE_MANAGER",
+              "EVIDENCE_OFFICER",
+              "AUDITOR"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED",
+              "DISABLED"
+            ],
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "EvidencePageResponse": {
+        "description": "Deterministically ordered page of digital evidence visible in one custody case.",
+        "properties": {
+          "content": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceSummaryResponse"
+            },
+            "type": "array"
+          },
+          "page": {
+            "example": 0,
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "size": {
+            "example": 20,
+            "format": "int32",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "totalElements": {
+            "example": 2,
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "totalPages": {
+            "example": 1,
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "content",
+          "page",
+          "size",
+          "totalElements",
+          "totalPages"
+        ],
+        "type": "object"
+      },
+      "EvidenceRegisteredPayload": {
+        "properties": {
+          "acquiredAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "acquisitionLocation": {
+            "type": "string"
+          },
+          "acquisitionMethod": {
+            "enum": [
+              "PHYSICAL",
+              "LOGICAL",
+              "EXPORT",
+              "CAPTURE",
+              "MANUAL_UPLOAD",
+              "OTHER",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "acquisitionNotes": {
+            "type": "string"
+          },
+          "acquisitionToolName": {
+            "type": "string"
+          },
+          "acquisitionToolVersion": {
+            "type": "string"
+          },
+          "backfilled": {
+            "type": "boolean"
+          },
+          "contentSha256": {
+            "type": "string"
+          },
+          "contextualSha256": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "fileExtension": {
+            "type": "string"
+          },
+          "fileSize": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "initialHolderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "mediaType": {
+            "type": "string"
+          },
+          "originalFilename": {
+            "type": "string"
+          },
+          "referenceTag": {
+            "type": "string"
+          },
+          "sourceDescription": {
+            "type": "string"
+          },
+          "sourceLogicalIdentifier": {
+            "type": "string"
+          },
+          "sourceManufacturer": {
+            "type": "string"
+          },
+          "sourceModel": {
+            "type": "string"
+          },
+          "sourceSerialNumber": {
+            "type": "string"
+          },
+          "sourceType": {
+            "enum": [
+              "DEVICE",
+              "FILESYSTEM",
+              "REMOVABLE_MEDIA",
+              "CLOUD_SERVICE",
+              "NETWORK_CAPTURE",
+              "EMAIL",
+              "DATABASE",
+              "OTHER",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "IN_CUSTODY",
+              "SEALED",
+              "RELEASED"
+            ],
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "uploadedById": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "EvidenceReleasedPayload": {
+        "properties": {
+          "newHolderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "newStatus": {
+            "enum": [
+              "IN_CUSTODY",
+              "SEALED",
+              "RELEASED"
+            ],
+            "type": "string"
+          },
+          "previousHolderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "previousStatus": {
+            "enum": [
+              "IN_CUSTODY",
+              "SEALED",
+              "RELEASED"
+            ],
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "EvidenceResponse": {
+        "description": "Complete digital evidence metadata without internal storage or locking fields.",
+        "properties": {
+          "acquiredAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "acquisitionLocation": {
+            "type": "string"
+          },
+          "acquisitionMethod": {
+            "enum": [
+              "PHYSICAL",
+              "LOGICAL",
+              "EXPORT",
+              "CAPTURE",
+              "MANUAL_UPLOAD",
+              "OTHER",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "acquisitionNotes": {
+            "type": "string"
+          },
+          "acquisitionToolName": {
+            "type": "string"
+          },
+          "acquisitionToolVersion": {
+            "type": "string"
+          },
+          "caseId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "contentSha256": {
+            "type": "string"
+          },
+          "contextualSha256": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "currentHolder": {
+            "$ref": "#/components/schemas/EvidenceOperatorSummaryResponse"
+          },
+          "description": {
+            "type": "string"
+          },
+          "fileExtension": {
+            "type": "string"
+          },
+          "fileSize": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "mediaType": {
+            "type": "string"
+          },
+          "originalFilename": {
+            "type": "string"
+          },
+          "referenceTag": {
+            "type": "string"
+          },
+          "sourceDescription": {
+            "type": "string"
+          },
+          "sourceLogicalIdentifier": {
+            "type": "string"
+          },
+          "sourceManufacturer": {
+            "type": "string"
+          },
+          "sourceModel": {
+            "type": "string"
+          },
+          "sourceSerialNumber": {
+            "type": "string"
+          },
+          "sourceType": {
+            "enum": [
+              "DEVICE",
+              "FILESYSTEM",
+              "REMOVABLE_MEDIA",
+              "CLOUD_SERVICE",
+              "NETWORK_CAPTURE",
+              "EMAIL",
+              "DATABASE",
+              "OTHER",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "IN_CUSTODY",
+              "SEALED",
+              "RELEASED"
+            ],
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "uploadedBy": {
+            "$ref": "#/components/schemas/EvidenceOperatorSummaryResponse"
+          }
+        },
+        "type": "object"
+      },
+      "EvidenceSealedPayload": {
+        "properties": {
+          "holderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "newStatus": {
+            "enum": [
+              "IN_CUSTODY",
+              "SEALED",
+              "RELEASED"
+            ],
+            "type": "string"
+          },
+          "previousStatus": {
+            "enum": [
+              "IN_CUSTODY",
+              "SEALED",
+              "RELEASED"
+            ],
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "EvidenceSummaryResponse": {
+        "description": "Compact digital evidence metadata for deterministic case-scoped listings.",
+        "properties": {
+          "acquiredAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "acquisitionMethod": {
+            "enum": [
+              "PHYSICAL",
+              "LOGICAL",
+              "EXPORT",
+              "CAPTURE",
+              "MANUAL_UPLOAD",
+              "OTHER",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "caseId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "contentSha256": {
+            "type": "string"
+          },
+          "contextualSha256": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "currentHolder": {
+            "$ref": "#/components/schemas/EvidenceOperatorSummaryResponse"
+          },
+          "fileExtension": {
+            "type": "string"
+          },
+          "fileSize": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "mediaType": {
+            "type": "string"
+          },
+          "originalFilename": {
+            "type": "string"
+          },
+          "referenceTag": {
+            "type": "string"
+          },
+          "sourceType": {
+            "enum": [
+              "DEVICE",
+              "FILESYSTEM",
+              "REMOVABLE_MEDIA",
+              "CLOUD_SERVICE",
+              "NETWORK_CAPTURE",
+              "EMAIL",
+              "DATABASE",
+              "OTHER",
+              "UNKNOWN"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "IN_CUSTODY",
+              "SEALED",
+              "RELEASED"
+            ],
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "uploadedBy": {
+            "$ref": "#/components/schemas/EvidenceOperatorSummaryResponse"
+          }
+        },
+        "type": "object"
+      },
+      "IntegrityVerificationResponse": {
+        "description": "Result of one file-integrity verification: the recomputed digest and observed byte count compared against the persisted evidence metadata, plus the appended custody event summary.",
+        "properties": {
+          "actualContentSha256": {
+            "description": "SHA-256 recomputed over the exact stored bytes during this verification",
+            "type": "string"
+          },
+          "actualFileSize": {
+            "description": "Number of bytes actually read during this verification",
+            "format": "int64",
+            "type": "integer"
+          },
+          "eventSummary": {
+            "$ref": "#/components/schemas/CustodyEventSummaryResponse",
+            "description": "Summary of the appended INTEGRITY_VERIFIED custody event, without its payload"
+          },
+          "evidenceId": {
+            "description": "Verified digital evidence identifier",
+            "format": "uuid",
+            "type": "string"
+          },
+          "expectedContentSha256": {
+            "description": "Persisted content SHA-256 of the evidence",
+            "type": "string"
+          },
+          "expectedFileSize": {
+            "description": "Persisted file size in bytes",
+            "format": "int64",
+            "type": "integer"
+          },
+          "valid": {
+            "description": "True only when both the recomputed digest and the observed byte count match",
+            "type": "boolean"
+          },
+          "verifiedAt": {
+            "description": "Single server instant shared by the evidence update and the appended custody event",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "IntegrityVerifiedPayload": {
+        "properties": {
+          "actualContentSha256": {
+            "type": "string"
+          },
+          "algorithm": {
+            "type": "string"
+          },
+          "expectedContentSha256": {
+            "type": "string"
+          },
+          "fileSize": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "valid": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "LoginRequest": {
+        "description": "Operator credentials. Both values are required and never logged.",
+        "properties": {
+          "password": {
+            "description": "Operator password. Never rendered, logged or echoed; the example is a redaction marker.",
+            "example": "<redacted>",
+            "format": "password",
+            "minLength": 1,
+            "type": "string"
+          },
+          "username": {
+            "description": "Operator username; normalized to lowercase before lookup.",
+            "example": "case.manager",
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "password",
+          "username"
+        ],
+        "type": "object"
+      },
+      "LoginResponse": {
+        "description": "Issued bearer access token and its absolute expiry.",
+        "properties": {
+          "accessToken": {
+            "description": "Signed JWT access token. The example is a redaction marker, not a decodable token.",
+            "example": "<redacted-access-token>",
+            "type": "string"
+          },
+          "expiresAt": {
+            "description": "Absolute UTC expiry of the issued token.",
+            "example": "2026-07-29T09:00:00Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "expiresInSeconds": {
+            "description": "Remaining lifetime in seconds at issue time.",
+            "example": 1800,
+            "format": "int64",
+            "type": "integer"
+          },
+          "tokenType": {
+            "description": "Always Bearer.",
+            "example": "Bearer",
+            "type": "string"
+          }
+        },
+        "required": [
+          "accessToken",
+          "expiresAt",
+          "expiresInSeconds",
+          "tokenType"
+        ],
+        "type": "object"
+      },
+      "MembershipResponse": {
+        "description": "Assignment of one operator to a custody case.",
+        "properties": {
+          "assignedAt": {
+            "example": "2026-07-29T08:15:30.123456Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "assignedBy": {
+            "$ref": "#/components/schemas/CaseOperatorSummaryResponse"
+          },
+          "caseId": {
+            "example": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+            "format": "uuid",
+            "type": "string"
+          },
+          "id": {
+            "example": "0ff41e0a-b2d3-48bb-a18c-5559ea748de8",
+            "format": "uuid",
+            "type": "string"
+          },
+          "operator": {
+            "$ref": "#/components/schemas/CaseOperatorSummaryResponse"
+          }
+        },
+        "required": [
+          "assignedAt",
+          "assignedBy",
+          "caseId",
+          "id",
+          "operator"
+        ],
+        "type": "object"
+      },
+      "MetadataUpdatedPayload": {
+        "properties": {
+          "after": {
+            "$ref": "#/components/schemas/EvidenceMetadataSnapshot"
+          },
+          "before": {
+            "$ref": "#/components/schemas/EvidenceMetadataSnapshot"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "OperatorDetailResponse": {
+        "properties": {
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "ADMIN",
+              "CASE_MANAGER",
+              "EVIDENCE_OFFICER",
+              "AUDITOR"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED",
+              "DISABLED"
+            ],
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "OperatorPageResponse": {
+        "properties": {
+          "content": {
+            "items": {
+              "$ref": "#/components/schemas/OperatorSummaryResponse"
+            },
+            "type": "array"
+          },
+          "page": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "size": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/OperatorSortResponse"
+          },
+          "totalElements": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalPages": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "OperatorSortResponse": {
+        "properties": {
+          "direction": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "OperatorSummaryResponse": {
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "ADMIN",
+              "CASE_MANAGER",
+              "EVIDENCE_OFFICER",
+              "AUDITOR"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED",
+              "DISABLED"
+            ],
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PatchCaseMetadataRequest": {
+        "additionalProperties": false,
+        "description": "Partial custody case metadata update. At least one property is required and unknown properties are rejected.",
+        "minProperties": 1,
+        "properties": {
+          "authorityName": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "Court of Rome",
+            "maxLength": 200,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "Supplemental examination approved.",
+            "maxLength": 2000,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "externalReference": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "WARRANT-2026-0142-A",
+            "maxLength": 200,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "location": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "Evidence room B",
+            "maxLength": 300,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "priority": {
+            "description": "When present, must be non-null.",
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH",
+              "CRITICAL"
+            ],
+            "example": "CRITICAL",
+            "type": "string"
+          },
+          "title": {
+            "description": "When present, must be non-null and is validated after trimming.",
+            "example": "Mobile device seizure - supplemental examination",
+            "maxLength": 200,
+            "minLength": 3,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PatchEvidenceMetadataRequest": {
+        "additionalProperties": false,
+        "description": "Presence-aware descriptive metadata patch. An absent property preserves the current value, an explicit null clears an optional value, and unknown or immutable properties are rejected.",
+        "properties": {
+          "acquiredAt": {
+            "description": "Explicit null clears the value; when non-null it is truncated to microseconds and must not be later than the immutable evidence createdAt.",
+            "example": "2026-07-30T09:15:00Z",
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "acquisitionLocation": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "Evidence room B",
+            "maxLength": 300,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "acquisitionMethod": {
+            "description": "When present it must be a supported non-null acquisition method.",
+            "enum": [
+              "PHYSICAL",
+              "LOGICAL",
+              "EXPORT",
+              "CAPTURE",
+              "MANUAL_UPLOAD",
+              "OTHER",
+              "UNKNOWN"
+            ],
+            "example": "PHYSICAL",
+            "type": "string"
+          },
+          "acquisitionNotes": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "Write blocker used during acquisition.",
+            "maxLength": 2000,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "acquisitionToolName": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "AcquireTool",
+            "maxLength": 200,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "acquisitionToolVersion": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "3.1.4",
+            "maxLength": 100,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "Full physical acquisition of the internal drive.",
+            "maxLength": 2000,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "description": "Operational reason; trimmed and validated to 1 to 1000 characters after trimming. It is never part of the before and after metadata snapshots.",
+            "example": "Corrected the acquisition tool version after the laboratory review.",
+            "maxLength": 1000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "sourceDescription": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "Laptop seized in the living room.",
+            "maxLength": 500,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceLogicalIdentifier": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "host-42/volume-1",
+            "maxLength": 300,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceManufacturer": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "ACME",
+            "maxLength": 100,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceModel": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "X1-2026",
+            "maxLength": 100,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceSerialNumber": {
+            "description": "Explicit null or blank clears the value; length is validated after trimming.",
+            "example": "SN-0042-AB",
+            "maxLength": 200,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceType": {
+            "description": "When present it must be a supported non-null source type.",
+            "enum": [
+              "DEVICE",
+              "FILESYSTEM",
+              "REMOVABLE_MEDIA",
+              "CLOUD_SERVICE",
+              "NETWORK_CAPTURE",
+              "EMAIL",
+              "DATABASE",
+              "OTHER",
+              "UNKNOWN"
+            ],
+            "example": "DEVICE",
+            "type": "string"
+          },
+          "title": {
+            "description": "When present it must be non-null and non-blank; length is validated after trimming.",
+            "example": "Forensic disk image of the seized laptop",
+            "maxLength": 200,
+            "minLength": 3,
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "type": "object"
+      },
+      "ProblemDetail": {
+        "properties": {
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "format": "uri",
+            "type": "string"
+          },
+          "properties": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "status": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ReleaseEvidenceRequest": {
+        "additionalProperties": false,
+        "description": "Evidence release command. Unknown properties are rejected.",
+        "properties": {
+          "reason": {
+            "description": "Operational reason; trimmed and validated to 1 to 1000 characters after trimming.",
+            "example": "Proceedings closed; custody of the evidence is terminated.",
+            "maxLength": 1000,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "type": "object"
+      },
+      "SealEvidenceRequest": {
+        "additionalProperties": false,
+        "description": "Evidence seal command. Unknown properties are rejected.",
+        "properties": {
+          "reason": {
+            "description": "Operational reason; trimmed and validated to 1 to 1000 characters after trimming.",
+            "example": "Analysis completed; the working copy is sealed for preservation.",
+            "maxLength": 1000,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "type": "object"
+      },
+      "TransferCustodyRequest": {
+        "additionalProperties": false,
+        "description": "Custody transfer command. Unknown properties are rejected.",
+        "properties": {
+          "newHolderId": {
+            "description": "Eligible member of the owning custody case that receives custody. It must differ from the current holder.",
+            "example": "b32ecaa9-8c4c-43d7-bdc0-28f9e38f3c37",
+            "format": "uuid",
+            "type": "string"
+          },
+          "reason": {
+            "description": "Operational reason; trimmed and validated to 1 to 1000 characters after trimming.",
+            "example": "Handover to the laboratory analyst.",
+            "maxLength": 1000,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "newHolderId",
+          "reason"
+        ],
+        "type": "object"
+      },
+      "UpdateCaseStatusRequest": {
+        "additionalProperties": false,
+        "description": "Irreversible custody case closure command. Unknown properties are rejected.",
+        "properties": {
+          "status": {
+            "description": "CLOSED performs or repeats closure; OPEN returns a 409 transition conflict.",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ],
+            "example": "CLOSED",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "type": "object"
+      },
+      "UpdateOperatorRoleRequest": {
+        "properties": {
+          "role": {
+            "enum": [
+              "ADMIN",
+              "CASE_MANAGER",
+              "EVIDENCE_OFFICER",
+              "AUDITOR"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "role"
+        ],
+        "type": "object"
+      },
+      "UpdateOperatorStatusRequest": {
+        "properties": {
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED",
+              "DISABLED"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "REST API for managing the chain of custody of digital evidence.",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/license/mit"
+    },
+    "title": "ProofChain API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/auth/login": {
+      "post": {
+        "description": "Authenticates an ACTIVE operator by normalized username and password.",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            },
+            "description": "Login successful"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Validation error"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid credentials"
+          }
+        },
+        "security": [],
+        "summary": "Authenticate an operator",
+        "tags": [
+          "auth-controller"
+        ]
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "description": "Returns the immutable database-backed operator identity authenticated for this request.",
+        "operationId": "getCurrentOperator",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentOperatorResponse"
+                }
+              }
+            },
+            "description": "Current operator"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required or invalid token"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get the current operator",
+        "tags": [
+          "auth-controller"
+        ]
+      }
+    },
+    "/api/v1/cases": {
+      "get": {
+        "description": "Returns all cases for ADMIN callers and membership-scoped cases for other roles, sorted by createdAt descending and id ascending. Client-controlled sorting is rejected.",
+        "operationId": "listCustodyCases",
+        "parameters": [
+          {
+            "description": "Zero-based page index",
+            "example": 0,
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Page size from 1 to 100",
+            "example": 20,
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Unsupported; any occurrence is rejected",
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CasePageResponse"
+                }
+              }
+            },
+            "description": "Accessible custody case page"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid pagination or unsupported sorting"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "List accessible custody cases",
+        "tags": [
+          "Custody cases"
+        ]
+      },
+      "post": {
+        "description": "Atomically creates an OPEN case and its creator membership. Available to ACTIVE ADMIN and CASE_MANAGER operators.",
+        "operationId": "createCustodyCase",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "case": {
+                  "description": "case",
+                  "value": {
+                    "authorityName": "Court of Rome",
+                    "description": "Device collected under warrant 2026-0142.",
+                    "externalReference": "WARRANT-2026-0142",
+                    "location": "Evidence room A",
+                    "priority": "HIGH",
+                    "title": "Mobile device seizure"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/CreateCaseRequest"
+              }
+            }
+          },
+          "description": "Strict custody case metadata document.",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseResponse"
+                }
+              }
+            },
+            "description": "Custody case created",
+            "headers": {
+              "Location": {
+                "description": "URI of the created custody case",
+                "required": true,
+                "schema": {
+                  "format": "uri",
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Validation error"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Access denied"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create a custody case",
+        "tags": [
+          "Custody cases"
+        ]
+      }
+    },
+    "/api/v1/cases/{caseId}": {
+      "get": {
+        "description": "Returns the case to ADMIN callers or assigned members. Existing but inaccessible cases use the same 404 response as missing cases.",
+        "operationId": "getCustodyCase",
+        "parameters": [
+          {
+            "description": "Custody case identifier",
+            "example": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+            "in": "path",
+            "name": "caseId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseResponse"
+                }
+              }
+            },
+            "description": "Custody case details"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid custody case identifier"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Custody case hidden or not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get an accessible custody case",
+        "tags": [
+          "Custody cases"
+        ]
+      },
+      "patch": {
+        "description": "Partially updates metadata on an OPEN custody case. ADMIN callers have global authority; CASE_MANAGER callers must be members.",
+        "operationId": "updateCustodyCaseMetadata",
+        "parameters": [
+          {
+            "description": "Custody case identifier",
+            "example": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+            "in": "path",
+            "name": "caseId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "metadata": {
+                  "description": "metadata",
+                  "value": {
+                    "description": "Supplemental examination approved.",
+                    "location": null,
+                    "priority": "CRITICAL"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/PatchCaseMetadataRequest"
+              }
+            }
+          },
+          "description": "Strict partial update; omitted properties are preserved and explicit null clears nullable metadata.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseResponse"
+                }
+              }
+            },
+            "description": "Custody case metadata updated"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid patch document"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Visible custody case cannot be modified by the caller"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Custody case hidden or not found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Custody case closed or concurrently modified"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Update custody case metadata",
+        "tags": [
+          "Custody cases"
+        ]
+      }
+    },
+    "/api/v1/cases/{caseId}/evidences": {
+      "get": {
+        "description": "Available to ADMIN callers and every assigned case member, including AUDITOR. Closed cases remain readable. Paging defaults to page 0 and size 20, with a maximum size of 100. Results are always ordered by createdAt descending and id ascending; client sorting and evidence filters are not supported.",
+        "operationId": "listDigitalEvidence",
+        "parameters": [
+          {
+            "description": "Custody case identifier",
+            "example": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+            "in": "path",
+            "name": "caseId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Zero-based page index",
+            "example": 0,
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Page size from 1 to 100",
+            "example": 20,
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Unsupported; any occurrence is rejected",
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvidencePageResponse"
+                }
+              }
+            },
+            "description": "Visible evidence page"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid pagination, case identifier, or unsupported sorting"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Custody case hidden or not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "List evidence in a visible custody case",
+        "tags": [
+          "Digital evidence"
+        ]
+      },
+      "post": {
+        "description": "Atomically stages and hashes file bytes, registers metadata in an OPEN custody case, and finalizes storage. Available to ADMIN globally and assigned CASE_MANAGER or EVIDENCE_OFFICER operators; inaccessible cases are hidden as 404. The multipart request contains exactly metadata (application/json) and file (binary). Identical bytes create independent evidence records and are not deduplicated.",
+        "operationId": "registerDigitalEvidence",
+        "parameters": [
+          {
+            "description": "Custody case identifier",
+            "example": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+            "in": "path",
+            "name": "caseId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "file": {
+                    "description": "Arbitrary non-empty binary content. The configured file limit defaults to 50 MB.",
+                    "format": "binary",
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "$ref": "#/components/schemas/CreateEvidenceRequest"
+                  }
+                },
+                "required": [
+                  "file",
+                  "metadata"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvidenceResponse"
+                }
+              }
+            },
+            "description": "Digital evidence registered",
+            "headers": {
+              "Location": {
+                "description": "Canonical detail URI of the registered evidence",
+                "required": true,
+                "schema": {
+                  "format": "uri",
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid metadata, multipart structure, filename, media type fallback input, or empty file"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Visible case cannot receive evidence from the caller or holder selection is forbidden"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Custody case hidden or not found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Closed case, ineligible holder, or duplicate reference tag"
+          },
+          "413": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence file exceeds the configured limit"
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence storage failure"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Register digital evidence",
+        "tags": [
+          "Digital evidence"
+        ]
+      }
+    },
+    "/api/v1/cases/{caseId}/members": {
+      "get": {
+        "description": "Returns members to ADMIN callers or assigned members, ordered by assignedAt ascending and membership id ascending. Inaccessible cases are hidden as 404.",
+        "operationId": "listCustodyCaseMembers",
+        "parameters": [
+          {
+            "description": "Custody case identifier",
+            "example": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+            "in": "path",
+            "name": "caseId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MembershipResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Ordered custody case memberships"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid identifier"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Custody case hidden or not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "List custody case members",
+        "tags": [
+          "Custody cases"
+        ]
+      }
+    },
+    "/api/v1/cases/{caseId}/members/{operatorId}": {
+      "delete": {
+        "description": "Removes a membership idempotently from an OPEN case while preserving at least one ACTIVE responsible manager. ADMIN callers have global authority; CASE_MANAGER callers must be members.",
+        "operationId": "removeCustodyCaseMember",
+        "parameters": [
+          {
+            "description": "Custody case identifier",
+            "example": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+            "in": "path",
+            "name": "caseId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Operator identifier",
+            "example": "9a3b8bf4-1d96-4a1e-810e-5a2f8b6ee2b1",
+            "in": "path",
+            "name": "operatorId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Membership absent after the operation"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid identifier"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Visible custody case cannot be managed by the caller"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Custody case hidden or not found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Closed case or last responsible manager removal"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Remove a custody case member",
+        "tags": [
+          "Custody cases"
+        ]
+      },
+      "put": {
+        "description": "Creates one membership for an ACTIVE non-ADMIN operator or returns the unchanged existing membership idempotently. ADMIN callers have global authority; CASE_MANAGER callers must be members of an OPEN case.",
+        "operationId": "assignCustodyCaseMember",
+        "parameters": [
+          {
+            "description": "Custody case identifier",
+            "example": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+            "in": "path",
+            "name": "caseId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Operator identifier",
+            "example": "9a3b8bf4-1d96-4a1e-810e-5a2f8b6ee2b1",
+            "in": "path",
+            "name": "operatorId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipResponse"
+                }
+              }
+            },
+            "description": "Membership already existed"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipResponse"
+                }
+              }
+            },
+            "description": "Membership created"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid identifier"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Visible custody case cannot be managed by the caller"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Custody case hidden/not found or target operator not found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Closed case, invalid target state/role, or concurrent conflict"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Assign a custody case member",
+        "tags": [
+          "Custody cases"
+        ]
+      }
+    },
+    "/api/v1/cases/{caseId}/status": {
+      "patch": {
+        "description": "Irreversibly targets CLOSED status. Repeating CLOSED is idempotent; OPEN is an invalid transition. ADMIN callers have global authority; CASE_MANAGER callers must be members.",
+        "operationId": "closeCustodyCase",
+        "parameters": [
+          {
+            "description": "Custody case identifier",
+            "example": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+            "in": "path",
+            "name": "caseId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "close": {
+                  "description": "close",
+                  "value": {
+                    "status": "CLOSED"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCaseStatusRequest"
+              }
+            }
+          },
+          "description": "Strict closure command.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseResponse"
+                }
+              }
+            },
+            "description": "Custody case closed or already closed"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid status document"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Visible custody case cannot be closed by the caller"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Custody case hidden or not found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid status transition or concurrent modification"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Close a custody case",
+        "tags": [
+          "Custody cases"
+        ]
+      }
+    },
+    "/api/v1/evidences/{evidenceId}": {
+      "get": {
+        "description": "Returns complete evidence metadata to ADMIN callers or any assigned member of its custody case. Closed cases and RELEASED evidence remain readable. Existing but inaccessible evidence is indistinguishable from missing evidence; storage keys and persistence versions are never returned.",
+        "operationId": "getDigitalEvidence",
+        "parameters": [
+          {
+            "description": "Digital evidence identifier",
+            "example": "6f674949-c508-49bf-a160-ef720f9b51ee",
+            "in": "path",
+            "name": "evidenceId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvidenceResponse"
+                }
+              }
+            },
+            "description": "Visible evidence details"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid evidence identifier"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence hidden or not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get visible evidence details",
+        "tags": [
+          "Digital evidence"
+        ]
+      }
+    },
+    "/api/v1/evidences/{evidenceId}/download": {
+      "get": {
+        "description": "Streams the exact stored bytes as an attachment outside the database transaction. Available to ADMIN callers and any assigned case member for IN_CUSTODY, SEALED or RELEASED evidence, including closed cases. Range is ignored and every success is a complete 200 response; ETag, conditional requests and implicit integrity verification are not supported.",
+        "operationId": "downloadDigitalEvidence",
+        "parameters": [
+          {
+            "description": "Digital evidence identifier",
+            "example": "6f674949-c508-49bf-a160-ef720f9b51ee",
+            "in": "path",
+            "name": "evidenceId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Ignored; the complete representation is always returned",
+            "in": "header",
+            "name": "Range",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Complete evidence content",
+            "headers": {
+              "Content-Disposition": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "style": "simple"
+              },
+              "Content-Length": {
+                "required": true,
+                "schema": {
+                  "format": "int64",
+                  "type": "integer"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid evidence identifier"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence hidden or not found"
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence file unavailable or storage failure"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Download visible evidence content",
+        "tags": [
+          "Digital evidence"
+        ]
+      }
+    },
+    "/api/v1/evidences/{evidenceId}/events": {
+      "get": {
+        "description": "Available globally to ADMIN and to every assigned member of the evidence case, including AUDITOR. Hidden and missing evidence are indistinguishable. Closed cases and all evidence lifecycle states remain readable. Paging defaults to page 0 and size 50, with a maximum size of 200. Sequence number ascending is the only order; every sort parameter and all filtering are rejected.",
+        "operationId": "listCustodyEvents",
+        "parameters": [
+          {
+            "description": "Digital evidence identifier",
+            "example": "6f674949-c508-49bf-a160-ef720f9b51ee",
+            "in": "path",
+            "name": "evidenceId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Zero-based page index",
+            "example": 0,
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Page size from 1 to 200",
+            "example": 50,
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Unsupported; every occurrence is rejected",
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustodyEventPageResponse"
+                }
+              }
+            },
+            "description": "Visible custody-event page without payload bodies"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid identifier, pagination or unsupported sorting"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence hidden or not found"
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Persisted custody-event protocol data cannot be read safely"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "List the immutable custody-event timeline",
+        "tags": [
+          "Custody events"
+        ]
+      }
+    },
+    "/api/v1/evidences/{evidenceId}/events/{eventId}": {
+      "get": {
+        "description": "Returns the stored historical actor-role snapshot and the exact typed version-1 payload. Available globally to ADMIN and to every assigned case member. Hidden evidence uses the certified resource-not-found response. A missing event or an event paired with the wrong evidence uses event-not-found. Closed cases and RELEASED evidence remain readable.",
+        "operationId": "getCustodyEvent",
+        "parameters": [
+          {
+            "description": "Digital evidence identifier",
+            "example": "6f674949-c508-49bf-a160-ef720f9b51ee",
+            "in": "path",
+            "name": "evidenceId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Custody event identifier",
+            "example": "f24f1f96-2527-4b7d-bb1a-9781fc50cc07",
+            "in": "path",
+            "name": "eventId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Evidence registration": {
+                    "description": "Evidence registration",
+                    "value": {
+                      "actorRole": "EVIDENCE_OFFICER",
+                      "caseId": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+                      "eventHash": "7f3eaf87d89253f7cd8d7bde43310f61efb87abb62ca9617ec2c0d46cd4f494c",
+                      "eventType": "EVIDENCE_REGISTERED",
+                      "evidenceId": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                      "hashVersion": 1,
+                      "id": "f24f1f96-2527-4b7d-bb1a-9781fc50cc07",
+                      "occurredAt": "2026-07-29T12:34:56.123456Z",
+                      "operatorId": "eb8c2d1d-3f4a-4a8e-88c8-2e70b08f9714",
+                      "payload": {
+                        "acquiredAt": "2026-07-29T11:30:00Z",
+                        "acquisitionLocation": null,
+                        "acquisitionMethod": "PHYSICAL",
+                        "acquisitionNotes": null,
+                        "acquisitionToolName": null,
+                        "acquisitionToolVersion": null,
+                        "backfilled": false,
+                        "contentSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                        "contextualSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                        "description": null,
+                        "fileExtension": "e01",
+                        "fileSize": 4096,
+                        "initialHolderId": "eb8c2d1d-3f4a-4a8e-88c8-2e70b08f9714",
+                        "mediaType": "application/octet-stream",
+                        "originalFilename": "disk-image.E01",
+                        "referenceTag": "EVIDENCE-01",
+                        "sourceDescription": null,
+                        "sourceLogicalIdentifier": null,
+                        "sourceManufacturer": null,
+                        "sourceModel": null,
+                        "sourceSerialNumber": null,
+                        "sourceType": "DEVICE",
+                        "status": "IN_CUSTODY",
+                        "title": "Forensic disk image",
+                        "uploadedById": "eb8c2d1d-3f4a-4a8e-88c8-2e70b08f9714"
+                      },
+                      "payloadVersion": 1,
+                      "previousHash": "0000000000000000000000000000000000000000000000000000000000000000",
+                      "sequenceNumber": 1
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/CustodyEventDetailResponse"
+                }
+              }
+            },
+            "description": "Visible custody-event details"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid evidence or event identifier"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence hidden or missing (resource-not-found), or event missing/mismatched (event-not-found)"
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Persisted event type, payload or protocol version cannot be read safely"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get immutable custody-event details",
+        "tags": [
+          "Custody events"
+        ]
+      }
+    },
+    "/api/v1/evidences/{evidenceId}/metadata": {
+      "patch": {
+        "description": "Changes only the fourteen descriptive metadata fields and appends exactly one METADATA_UPDATED custody event in the same transaction. Semantics are presence-aware: an absent property preserves the current value, an explicit null clears an optional value, blank optional text is trimmed to null, and lengths are validated after normalization. Unknown or immutable properties are rejected. Allowed to ADMIN globally and to a member CASE_MANAGER or EVIDENCE_OFFICER; an AUDITOR that can see the evidence is forbidden. The evidence must be IN_CUSTODY and its case OPEN. When the complete normalized before and after snapshots are equal the request is a conflict and appends nothing. Hidden and nonexistent evidence are indistinguishable.",
+        "operationId": "updateEvidenceMetadata",
+        "parameters": [
+          {
+            "description": "Digital evidence identifier",
+            "example": "6f674949-c508-49bf-a160-ef720f9b51ee",
+            "in": "path",
+            "name": "evidenceId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "absent, explicit null and blank": {
+                  "description": "title is absent and preserved, description is an explicit null and cleared, acquisitionNotes is blank and normalized to null, and acquisitionToolVersion is trimmed.",
+                  "value": {
+                    "acquisitionNotes": "   ",
+                    "acquisitionToolVersion": "  3.1.4  ",
+                    "description": null,
+                    "reason": "Cleared the stale review note and corrected the tool version."
+                  }
+                },
+                "metadata": {
+                  "description": "metadata",
+                  "value": {
+                    "acquisitionNotes": null,
+                    "acquisitionToolVersion": "3.1.4",
+                    "reason": "Corrected the acquisition tool version after the laboratory review."
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/PatchEvidenceMetadataRequest"
+              }
+            }
+          },
+          "description": "Strict presence-aware patch carrying only descriptive metadata fields and the operational reason.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Descriptive metadata updated": {
+                    "description": "Descriptive metadata updated",
+                    "value": {
+                      "eventSummary": {
+                        "actorRole": "CASE_MANAGER",
+                        "caseId": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+                        "eventHash": "1d5c6b0f4a8e2c93b7d40f1e6a2c8b5f3e97d0a4c1b8e6f2d3a5c7091e4b8d62",
+                        "eventType": "METADATA_UPDATED",
+                        "evidenceId": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                        "hashVersion": 1,
+                        "id": "ac2f7e10-5f6f-4f0e-9d1b-0f5a3a1c9d21",
+                        "occurredAt": "2026-07-30T09:15:00.123456Z",
+                        "operatorId": "eb8c2d1d-3f4a-4a8e-88c8-2e70b08f9714",
+                        "payloadVersion": 1,
+                        "previousHash": "7f3eaf87d89253f7cd8d7bde43310f61efb87abb62ca9617ec2c0d46cd4f494c",
+                        "sequenceNumber": 3
+                      },
+                      "evidence": {
+                        "acquiredAt": null,
+                        "acquisitionLocation": null,
+                        "acquisitionMethod": "PHYSICAL",
+                        "acquisitionNotes": null,
+                        "acquisitionToolName": "AcquireTool",
+                        "acquisitionToolVersion": "3.1.4",
+                        "caseId": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+                        "contentSha256": "9ac0e4751fa6d0fca5082060cd44e943660f510cc4af096424b6396d52327262",
+                        "contextualSha256": "665dea9d0df23b5ea6e6a3b18f424270a3d9c5dd8e92e2272bfed580047a1b57",
+                        "createdAt": "2026-07-30T09:00:00Z",
+                        "currentHolder": {
+                          "firstName": "Lab",
+                          "id": "b32ecaa9-8c4c-43d7-bdc0-28f9e38f3c37",
+                          "lastName": "Analyst",
+                          "role": "EVIDENCE_OFFICER",
+                          "status": "ACTIVE",
+                          "username": "lab.analyst"
+                        },
+                        "description": null,
+                        "fileExtension": "bin",
+                        "fileSize": 25,
+                        "id": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                        "mediaType": "application/octet-stream",
+                        "originalFilename": "demo-evidence.bin",
+                        "referenceTag": "DEMO-01",
+                        "sourceDescription": null,
+                        "sourceLogicalIdentifier": null,
+                        "sourceManufacturer": null,
+                        "sourceModel": null,
+                        "sourceSerialNumber": null,
+                        "sourceType": "DEVICE",
+                        "status": "IN_CUSTODY",
+                        "title": "Disk image",
+                        "updatedAt": "2026-07-30T09:15:00.123456Z",
+                        "uploadedBy": {
+                          "firstName": "Field",
+                          "id": "eb8c2d1d-3f4a-4a8e-88c8-2e70b08f9714",
+                          "lastName": "Officer",
+                          "role": "EVIDENCE_OFFICER",
+                          "status": "ACTIVE",
+                          "username": "field.officer"
+                        }
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/EvidenceOperationResponse"
+                }
+              }
+            },
+            "description": "Descriptive metadata updated and custody event appended",
+            "headers": {
+              "Location": {
+                "description": "Canonical URI of the appended custody event",
+                "required": true,
+                "schema": {
+                  "format": "uri",
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid patch document, unknown or immutable property, unsupported enum value, invalid length after normalization, acquiredAt later than createdAt, or invalid reason"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Visible evidence metadata cannot be updated by the caller"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence hidden or not found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "examples": {
+                  "No-op metadata update": {
+                    "description": "No-op metadata update",
+                    "value": {
+                      "detail": "The requested metadata already matches the current evidence metadata.",
+                      "instance": "/api/v1/evidences/6f674949-c508-49bf-a160-ef720f9b51ee/metadata",
+                      "status": 409,
+                      "timestamp": "2026-07-30T09:15:00.123456Z",
+                      "title": "Metadata update no-op",
+                      "type": "https://proofchain.dev/problems/metadata-update-no-op"
+                    }
+                  },
+                  "Sealed or released evidence": {
+                    "description": "Sealed or released evidence",
+                    "value": {
+                      "detail": "Only evidence in custody can change descriptive metadata.",
+                      "instance": "/api/v1/evidences/6f674949-c508-49bf-a160-ef720f9b51ee/metadata",
+                      "status": 409,
+                      "timestamp": "2026-07-30T09:15:00.123456Z",
+                      "title": "Invalid evidence state",
+                      "type": "https://proofchain.dev/problems/invalid-evidence-state"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Closed case, invalid evidence state, no-op metadata update, or custody event concurrency conflict"
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Custody event persistence failure"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Update descriptive metadata of visible evidence",
+        "tags": [
+          "Digital evidence"
+        ]
+      }
+    },
+    "/api/v1/evidences/{evidenceId}/release": {
+      "post": {
+        "description": "Moves evidence from IN_CUSTODY or SEALED to the terminal RELEASED state, atomically clears the current holder and appends exactly one EVIDENCE_RELEASED custody event in the same transaction. Allowed only to ADMIN globally and to a member CASE_MANAGER; EVIDENCE_OFFICER and AUDITOR are forbidden. The owning case must be OPEN and the evidence must still have a holder, but that holder is deliberately not required to remain active or eligible, so custody can be terminated without a recovery transfer. A repeated release is a terminal transition and is rejected without appending any event; it is never reported as success. After release, transfer, metadata update, seal and further release are all forbidden and no operation can restore IN_CUSTODY or SEALED, while integrity verification, read, list, download, timeline and chain verification remain available under the existing visibility rules. Hidden and nonexistent evidence are indistinguishable.",
+        "operationId": "releaseEvidence",
+        "parameters": [
+          {
+            "description": "Digital evidence identifier",
+            "example": "6f674949-c508-49bf-a160-ef720f9b51ee",
+            "in": "path",
+            "name": "evidenceId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "release": {
+                  "description": "release",
+                  "value": {
+                    "reason": "Proceedings closed; custody of the evidence is terminated."
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/ReleaseEvidenceRequest"
+              }
+            }
+          },
+          "description": "Strict release command carrying only the operational reason.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Released from IN_CUSTODY": {
+                    "description": "Released from IN_CUSTODY",
+                    "value": {
+                      "eventSummary": {
+                        "actorRole": "CASE_MANAGER",
+                        "caseId": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+                        "eventHash": "1d5c6b0f4a8e2c93b7d40f1e6a2c8b5f3e97d0a4c1b8e6f2d3a5c7091e4b8d62",
+                        "eventType": "EVIDENCE_RELEASED",
+                        "evidenceId": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                        "hashVersion": 1,
+                        "id": "ac2f7e10-5f6f-4f0e-9d1b-0f5a3a1c9d21",
+                        "occurredAt": "2026-07-30T09:15:00.123456Z",
+                        "operatorId": "eb8c2d1d-3f4a-4a8e-88c8-2e70b08f9714",
+                        "payloadVersion": 1,
+                        "previousHash": "7f3eaf87d89253f7cd8d7bde43310f61efb87abb62ca9617ec2c0d46cd4f494c",
+                        "sequenceNumber": 3
+                      },
+                      "evidence": {
+                        "acquiredAt": null,
+                        "acquisitionLocation": null,
+                        "acquisitionMethod": "PHYSICAL",
+                        "acquisitionNotes": null,
+                        "acquisitionToolName": "AcquireTool",
+                        "acquisitionToolVersion": "3.1.4",
+                        "caseId": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+                        "contentSha256": "9ac0e4751fa6d0fca5082060cd44e943660f510cc4af096424b6396d52327262",
+                        "contextualSha256": "665dea9d0df23b5ea6e6a3b18f424270a3d9c5dd8e92e2272bfed580047a1b57",
+                        "createdAt": "2026-07-30T09:00:00Z",
+                        "currentHolder": null,
+                        "description": null,
+                        "fileExtension": "bin",
+                        "fileSize": 25,
+                        "id": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                        "mediaType": "application/octet-stream",
+                        "originalFilename": "demo-evidence.bin",
+                        "referenceTag": "DEMO-01",
+                        "sourceDescription": null,
+                        "sourceLogicalIdentifier": null,
+                        "sourceManufacturer": null,
+                        "sourceModel": null,
+                        "sourceSerialNumber": null,
+                        "sourceType": "DEVICE",
+                        "status": "RELEASED",
+                        "title": "Disk image",
+                        "updatedAt": "2026-07-30T09:15:00.123456Z",
+                        "uploadedBy": {
+                          "firstName": "Field",
+                          "id": "eb8c2d1d-3f4a-4a8e-88c8-2e70b08f9714",
+                          "lastName": "Officer",
+                          "role": "EVIDENCE_OFFICER",
+                          "status": "ACTIVE",
+                          "username": "field.officer"
+                        }
+                      }
+                    }
+                  },
+                  "Released from SEALED": {
+                    "description": "Released from SEALED",
+                    "value": {
+                      "eventSummary": {
+                        "actorRole": "CASE_MANAGER",
+                        "caseId": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+                        "eventHash": "1d5c6b0f4a8e2c93b7d40f1e6a2c8b5f3e97d0a4c1b8e6f2d3a5c7091e4b8d62",
+                        "eventType": "EVIDENCE_RELEASED",
+                        "evidenceId": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                        "hashVersion": 1,
+                        "id": "ac2f7e10-5f6f-4f0e-9d1b-0f5a3a1c9d21",
+                        "occurredAt": "2026-07-30T09:15:00.123456Z",
+                        "operatorId": "eb8c2d1d-3f4a-4a8e-88c8-2e70b08f9714",
+                        "payloadVersion": 1,
+                        "previousHash": "7f3eaf87d89253f7cd8d7bde43310f61efb87abb62ca9617ec2c0d46cd4f494c",
+                        "sequenceNumber": 5
+                      },
+                      "evidence": {
+                        "acquiredAt": null,
+                        "acquisitionLocation": null,
+                        "acquisitionMethod": "PHYSICAL",
+                        "acquisitionNotes": null,
+                        "acquisitionToolName": "AcquireTool",
+                        "acquisitionToolVersion": "3.1.4",
+                        "caseId": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+                        "contentSha256": "9ac0e4751fa6d0fca5082060cd44e943660f510cc4af096424b6396d52327262",
+                        "contextualSha256": "665dea9d0df23b5ea6e6a3b18f424270a3d9c5dd8e92e2272bfed580047a1b57",
+                        "createdAt": "2026-07-30T09:00:00Z",
+                        "currentHolder": null,
+                        "description": null,
+                        "fileExtension": "bin",
+                        "fileSize": 25,
+                        "id": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                        "mediaType": "application/octet-stream",
+                        "originalFilename": "demo-evidence.bin",
+                        "referenceTag": "DEMO-01",
+                        "sourceDescription": null,
+                        "sourceLogicalIdentifier": null,
+                        "sourceManufacturer": null,
+                        "sourceModel": null,
+                        "sourceSerialNumber": null,
+                        "sourceType": "DEVICE",
+                        "status": "RELEASED",
+                        "title": "Disk image",
+                        "updatedAt": "2026-07-30T09:15:00.123456Z",
+                        "uploadedBy": {
+                          "firstName": "Field",
+                          "id": "eb8c2d1d-3f4a-4a8e-88c8-2e70b08f9714",
+                          "lastName": "Officer",
+                          "role": "EVIDENCE_OFFICER",
+                          "status": "ACTIVE",
+                          "username": "field.officer"
+                        }
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/EvidenceOperationResponse"
+                }
+              }
+            },
+            "description": "Evidence released and custody event appended",
+            "headers": {
+              "Location": {
+                "description": "Canonical URI of the appended custody event",
+                "required": true,
+                "schema": {
+                  "format": "uri",
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid release document, unknown property, or invalid reason"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Visible evidence cannot be released by the caller"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence hidden or not found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "examples": {
+                  "Already released, terminal": {
+                    "description": "Already released, terminal",
+                    "value": {
+                      "detail": "Released evidence is terminal and cannot be modified.",
+                      "instance": "/api/v1/evidences/6f674949-c508-49bf-a160-ef720f9b51ee/release",
+                      "status": 409,
+                      "timestamp": "2026-07-30T09:15:00.123456Z",
+                      "title": "Invalid evidence state",
+                      "type": "https://proofchain.dev/problems/invalid-evidence-state"
+                    }
+                  },
+                  "Closed custody case": {
+                    "description": "Closed custody case",
+                    "value": {
+                      "detail": "The custody case is closed.",
+                      "instance": "/api/v1/evidences/6f674949-c508-49bf-a160-ef720f9b51ee/release",
+                      "status": 409,
+                      "timestamp": "2026-07-30T09:15:00.123456Z",
+                      "title": "Custody case closed",
+                      "type": "https://proofchain.dev/problems/case-closed"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Closed case, invalid evidence state, or custody event concurrency conflict"
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Custody event persistence failure"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Release visible evidence from custody",
+        "tags": [
+          "Digital evidence"
+        ]
+      }
+    },
+    "/api/v1/evidences/{evidenceId}/seal": {
+      "post": {
+        "description": "Moves evidence from IN_CUSTODY to SEALED and appends exactly one EVIDENCE_SEALED custody event in the same transaction. Allowed to ADMIN globally, to a member CASE_MANAGER, and to a member EVIDENCE_OFFICER only while it is the current holder; AUDITOR is forbidden. The owning case must be OPEN, the evidence must be IN_CUSTODY and its current holder must still be an ACTIVE ADMIN, CASE_MANAGER or EVIDENCE_OFFICER member of the case, otherwise the same holder conflict is returned and an explicit recovery transfer is required first. Sealing never changes, clears or re-derives the holder, and already SEALED or terminal RELEASED evidence is rejected without appending any event. Hidden and nonexistent evidence are indistinguishable.",
+        "operationId": "sealEvidence",
+        "parameters": [
+          {
+            "description": "Digital evidence identifier",
+            "example": "6f674949-c508-49bf-a160-ef720f9b51ee",
+            "in": "path",
+            "name": "evidenceId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "seal": {
+                  "description": "seal",
+                  "value": {
+                    "reason": "Analysis completed; the working copy is sealed for preservation."
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/SealEvidenceRequest"
+              }
+            }
+          },
+          "description": "Strict seal command carrying only the operational reason.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Evidence sealed": {
+                    "description": "Evidence sealed",
+                    "value": {
+                      "eventSummary": {
+                        "actorRole": "CASE_MANAGER",
+                        "caseId": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+                        "eventHash": "1d5c6b0f4a8e2c93b7d40f1e6a2c8b5f3e97d0a4c1b8e6f2d3a5c7091e4b8d62",
+                        "eventType": "EVIDENCE_SEALED",
+                        "evidenceId": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                        "hashVersion": 1,
+                        "id": "ac2f7e10-5f6f-4f0e-9d1b-0f5a3a1c9d21",
+                        "occurredAt": "2026-07-30T09:15:00.123456Z",
+                        "operatorId": "eb8c2d1d-3f4a-4a8e-88c8-2e70b08f9714",
+                        "payloadVersion": 1,
+                        "previousHash": "7f3eaf87d89253f7cd8d7bde43310f61efb87abb62ca9617ec2c0d46cd4f494c",
+                        "sequenceNumber": 4
+                      },
+                      "evidence": {
+                        "acquiredAt": null,
+                        "acquisitionLocation": null,
+                        "acquisitionMethod": "PHYSICAL",
+                        "acquisitionNotes": null,
+                        "acquisitionToolName": "AcquireTool",
+                        "acquisitionToolVersion": "3.1.4",
+                        "caseId": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+                        "contentSha256": "9ac0e4751fa6d0fca5082060cd44e943660f510cc4af096424b6396d52327262",
+                        "contextualSha256": "665dea9d0df23b5ea6e6a3b18f424270a3d9c5dd8e92e2272bfed580047a1b57",
+                        "createdAt": "2026-07-30T09:00:00Z",
+                        "currentHolder": {
+                          "firstName": "Lab",
+                          "id": "b32ecaa9-8c4c-43d7-bdc0-28f9e38f3c37",
+                          "lastName": "Analyst",
+                          "role": "EVIDENCE_OFFICER",
+                          "status": "ACTIVE",
+                          "username": "lab.analyst"
+                        },
+                        "description": null,
+                        "fileExtension": "bin",
+                        "fileSize": 25,
+                        "id": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                        "mediaType": "application/octet-stream",
+                        "originalFilename": "demo-evidence.bin",
+                        "referenceTag": "DEMO-01",
+                        "sourceDescription": null,
+                        "sourceLogicalIdentifier": null,
+                        "sourceManufacturer": null,
+                        "sourceModel": null,
+                        "sourceSerialNumber": null,
+                        "sourceType": "DEVICE",
+                        "status": "SEALED",
+                        "title": "Disk image",
+                        "updatedAt": "2026-07-30T09:15:00.123456Z",
+                        "uploadedBy": {
+                          "firstName": "Field",
+                          "id": "eb8c2d1d-3f4a-4a8e-88c8-2e70b08f9714",
+                          "lastName": "Officer",
+                          "role": "EVIDENCE_OFFICER",
+                          "status": "ACTIVE",
+                          "username": "field.officer"
+                        }
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/EvidenceOperationResponse"
+                }
+              }
+            },
+            "description": "Evidence sealed and custody event appended",
+            "headers": {
+              "Location": {
+                "description": "Canonical URI of the appended custody event",
+                "required": true,
+                "schema": {
+                  "format": "uri",
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid seal document, unknown property, or invalid reason"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Visible evidence cannot be sealed by the caller"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence hidden or not found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "examples": {
+                  "Current holder no longer eligible": {
+                    "description": "Current holder no longer eligible",
+                    "value": {
+                      "detail": "The requested holder is not eligible for this custody case.",
+                      "instance": "/api/v1/evidences/6f674949-c508-49bf-a160-ef720f9b51ee/seal",
+                      "status": 409,
+                      "timestamp": "2026-07-30T09:15:00.123456Z",
+                      "title": "Evidence holder not eligible",
+                      "type": "https://proofchain.dev/problems/holder-not-eligible"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Closed case, invalid evidence state, ineligible current holder, or custody event concurrency conflict"
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Custody event persistence failure"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Seal visible evidence in custody",
+        "tags": [
+          "Digital evidence"
+        ]
+      }
+    },
+    "/api/v1/evidences/{evidenceId}/transfer": {
+      "post": {
+        "description": "Changes only the current holder and appends exactly one CUSTODY_TRANSFERRED custody event in the same transaction. Allowed to ADMIN globally, to a member CASE_MANAGER, and to a member EVIDENCE_OFFICER only while it is the current holder; ADMIN and member CASE_MANAGER may also recover evidence from a suspended or disabled holder. Evidence must be IN_CUSTODY or SEALED and its case must be OPEN; the status never changes, so SEALED evidence stays SEALED. The target must be an ACTIVE ADMIN, CASE_MANAGER or EVIDENCE_OFFICER member of the owning case; every ineligibility cause returns the same conflict. Hidden and nonexistent evidence are indistinguishable.",
+        "operationId": "transferEvidenceCustody",
+        "parameters": [
+          {
+            "description": "Digital evidence identifier",
+            "example": "6f674949-c508-49bf-a160-ef720f9b51ee",
+            "in": "path",
+            "name": "evidenceId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "transfer": {
+                  "description": "transfer",
+                  "value": {
+                    "newHolderId": "b32ecaa9-8c4c-43d7-bdc0-28f9e38f3c37",
+                    "reason": "Handover to the laboratory analyst."
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/TransferCustodyRequest"
+              }
+            }
+          },
+          "description": "Strict transfer command carrying only the target holder and the operational reason.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Custody transferred": {
+                    "description": "Custody transferred",
+                    "value": {
+                      "eventSummary": {
+                        "actorRole": "CASE_MANAGER",
+                        "caseId": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+                        "eventHash": "1d5c6b0f4a8e2c93b7d40f1e6a2c8b5f3e97d0a4c1b8e6f2d3a5c7091e4b8d62",
+                        "eventType": "CUSTODY_TRANSFERRED",
+                        "evidenceId": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                        "hashVersion": 1,
+                        "id": "ac2f7e10-5f6f-4f0e-9d1b-0f5a3a1c9d21",
+                        "occurredAt": "2026-07-30T09:15:00.123456Z",
+                        "operatorId": "eb8c2d1d-3f4a-4a8e-88c8-2e70b08f9714",
+                        "payloadVersion": 1,
+                        "previousHash": "7f3eaf87d89253f7cd8d7bde43310f61efb87abb62ca9617ec2c0d46cd4f494c",
+                        "sequenceNumber": 2
+                      },
+                      "evidence": {
+                        "acquiredAt": null,
+                        "acquisitionLocation": null,
+                        "acquisitionMethod": "PHYSICAL",
+                        "acquisitionNotes": null,
+                        "acquisitionToolName": "AcquireTool",
+                        "acquisitionToolVersion": "3.1.4",
+                        "caseId": "1ca01c67-75b9-48e3-a2ed-72259373c67c",
+                        "contentSha256": "9ac0e4751fa6d0fca5082060cd44e943660f510cc4af096424b6396d52327262",
+                        "contextualSha256": "665dea9d0df23b5ea6e6a3b18f424270a3d9c5dd8e92e2272bfed580047a1b57",
+                        "createdAt": "2026-07-30T09:00:00Z",
+                        "currentHolder": {
+                          "firstName": "Lab",
+                          "id": "b32ecaa9-8c4c-43d7-bdc0-28f9e38f3c37",
+                          "lastName": "Analyst",
+                          "role": "EVIDENCE_OFFICER",
+                          "status": "ACTIVE",
+                          "username": "lab.analyst"
+                        },
+                        "description": null,
+                        "fileExtension": "bin",
+                        "fileSize": 25,
+                        "id": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                        "mediaType": "application/octet-stream",
+                        "originalFilename": "demo-evidence.bin",
+                        "referenceTag": "DEMO-01",
+                        "sourceDescription": null,
+                        "sourceLogicalIdentifier": null,
+                        "sourceManufacturer": null,
+                        "sourceModel": null,
+                        "sourceSerialNumber": null,
+                        "sourceType": "DEVICE",
+                        "status": "IN_CUSTODY",
+                        "title": "Disk image",
+                        "updatedAt": "2026-07-30T09:15:00.123456Z",
+                        "uploadedBy": {
+                          "firstName": "Field",
+                          "id": "eb8c2d1d-3f4a-4a8e-88c8-2e70b08f9714",
+                          "lastName": "Officer",
+                          "role": "EVIDENCE_OFFICER",
+                          "status": "ACTIVE",
+                          "username": "field.officer"
+                        }
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/EvidenceOperationResponse"
+                }
+              }
+            },
+            "description": "Custody transferred and custody event appended",
+            "headers": {
+              "Location": {
+                "description": "Canonical URI of the appended custody event",
+                "required": true,
+                "schema": {
+                  "format": "uri",
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid transfer document, unknown property, or invalid reason"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "examples": {
+                  "Visible but forbidden operation": {
+                    "description": "Visible but forbidden operation",
+                    "value": {
+                      "detail": "The authenticated operator is not authorized to perform this operation.",
+                      "instance": "/api/v1/evidences/6f674949-c508-49bf-a160-ef720f9b51ee/transfer",
+                      "status": 403,
+                      "timestamp": "2026-07-30T09:15:00.123456Z",
+                      "title": "Access denied",
+                      "type": "https://proofchain.dev/problems/access-denied"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Visible evidence cannot be transferred by the caller"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "examples": {
+                  "Hidden or missing evidence": {
+                    "description": "Hidden or missing evidence",
+                    "value": {
+                      "detail": "The requested resource was not found.",
+                      "instance": "/api/v1/evidences/6f674949-c508-49bf-a160-ef720f9b51ee/transfer",
+                      "status": 404,
+                      "timestamp": "2026-07-30T09:15:00.123456Z",
+                      "title": "Resource not found",
+                      "type": "https://proofchain.dev/problems/resource-not-found"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence hidden or not found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "examples": {
+                  "Ineligible target holder": {
+                    "description": "Ineligible target holder",
+                    "value": {
+                      "detail": "The requested holder is not eligible for this custody case.",
+                      "instance": "/api/v1/evidences/6f674949-c508-49bf-a160-ef720f9b51ee/transfer",
+                      "status": 409,
+                      "timestamp": "2026-07-30T09:15:00.123456Z",
+                      "title": "Evidence holder not eligible",
+                      "type": "https://proofchain.dev/problems/holder-not-eligible"
+                    }
+                  },
+                  "No-op transfer": {
+                    "description": "No-op transfer",
+                    "value": {
+                      "detail": "The requested holder already holds this evidence.",
+                      "instance": "/api/v1/evidences/6f674949-c508-49bf-a160-ef720f9b51ee/transfer",
+                      "status": 409,
+                      "timestamp": "2026-07-30T09:15:00.123456Z",
+                      "title": "Custody transfer no-op",
+                      "type": "https://proofchain.dev/problems/custody-transfer-no-op"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Closed case, invalid evidence state, ineligible holder, no-op transfer, or custody event concurrency conflict"
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Custody event persistence failure"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Transfer custody of visible evidence",
+        "tags": [
+          "Digital evidence"
+        ]
+      }
+    },
+    "/api/v1/evidences/{evidenceId}/verify-chain": {
+      "post": {
+        "description": "Read-only command that recomputes and re-links every custody event for one evidence and never mutates any state: no verification record is persisted and no event is appended. Available globally to ADMIN and to every assigned case member, including AUDITOR. Hidden and missing evidence are indistinguishable. Closed cases and every evidence lifecycle state, including RELEASED, remain verifiable. Always answers 200 OK, whether the chain is valid or a precise corruption reason is found; verification failures are never reported as 409 or 422.",
+        "operationId": "verifyCustodyChain",
+        "parameters": [
+          {
+            "description": "Digital evidence identifier",
+            "example": "6f674949-c508-49bf-a160-ef720f9b51ee",
+            "in": "path",
+            "name": "evidenceId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Invalid chain": {
+                    "description": "Invalid chain",
+                    "value": {
+                      "actualValue": "0000000000000000000000000000000000000000000000000000000000000000",
+                      "brokenAtEventId": "f24f1f96-2527-4b7d-bb1a-9781fc50cc07",
+                      "brokenAtSequenceNumber": 3,
+                      "calculatedHeadHash": "9c1185a5c5e9fc54612808977ee8f548b2258d31ff2b7e10c3e15e9cc0e3a1e5",
+                      "checkedEvents": 2,
+                      "evidenceId": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                      "expectedValue": "9c1185a5c5e9fc54612808977ee8f548b2258d31ff2b7e10c3e15e9cc0e3a1e5",
+                      "loadedEventCount": 6,
+                      "reason": "PREVIOUS_HASH_MISMATCH",
+                      "storedEventCount": 6,
+                      "storedHeadHash": "7f3eaf87d89253f7cd8d7bde43310f61efb87abb62ca9617ec2c0d46cd4f494c",
+                      "valid": false,
+                      "verifiedAt": "2026-07-30T09:15:00.123456Z"
+                    }
+                  },
+                  "Valid chain": {
+                    "description": "Valid chain",
+                    "value": {
+                      "actualValue": null,
+                      "brokenAtEventId": null,
+                      "brokenAtSequenceNumber": null,
+                      "calculatedHeadHash": "7f3eaf87d89253f7cd8d7bde43310f61efb87abb62ca9617ec2c0d46cd4f494c",
+                      "checkedEvents": 6,
+                      "evidenceId": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                      "expectedValue": null,
+                      "loadedEventCount": 6,
+                      "reason": null,
+                      "storedEventCount": 6,
+                      "storedHeadHash": "7f3eaf87d89253f7cd8d7bde43310f61efb87abb62ca9617ec2c0d46cd4f494c",
+                      "valid": true,
+                      "verifiedAt": "2026-07-30T09:15:00.123456Z"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/CustodyChainVerificationResponse"
+                }
+              }
+            },
+            "description": "Verification completed; the chain may be valid or report the first violation found"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid evidence identifier"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence hidden or not found"
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Persisted custody-chain data cannot be read safely for diagnosis"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Deterministically verify one evidence's full custody chain",
+        "tags": [
+          "Custody events"
+        ]
+      }
+    },
+    "/api/v1/evidences/{evidenceId}/verify-integrity": {
+      "post": {
+        "description": "Re-reads the exact stored bytes in one bounded-memory pass, recomputes their SHA-256 and counts them, compares both against the persisted evidence metadata and appends exactly one INTEGRITY_VERIFIED custody event in the same transaction. The request has no body. Allowed to ADMIN globally and to every assigned case member, including AUDITOR; hidden and nonexistent evidence are indistinguishable. The owning case must be OPEN because the command appends an event, while every evidence status is verifiable, including the terminal RELEASED. A conforming and a non-conforming result are both completed verifications and both answer 200 OK with the appended event; a mismatch is never reported as 409, 422 or 500. Only a technical inability to read the exact file is an error, and it appends no event and changes nothing. The persisted content hash, file size and stored bytes are never modified.",
+        "operationId": "verifyEvidenceIntegrity",
+        "parameters": [
+          {
+            "description": "Digital evidence identifier",
+            "example": "6f674949-c508-49bf-a160-ef720f9b51ee",
+            "in": "path",
+            "name": "evidenceId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Conforming content": {
+                    "description": "Conforming content",
+                    "value": {
+                      "actualContentSha256": "9ac0e4751fa6d0fca5082060cd44e943660f510cc4af096424b6396d52327262",
+                      "actualFileSize": 25,
+                      "evidenceId": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                      "expectedContentSha256": "9ac0e4751fa6d0fca5082060cd44e943660f510cc4af096424b6396d52327262",
+                      "expectedFileSize": 25,
+                      "valid": true,
+                      "verifiedAt": "2026-07-30T09:15:00.123456Z"
+                    }
+                  },
+                  "Non-conforming content": {
+                    "description": "Non-conforming content",
+                    "value": {
+                      "actualContentSha256": "3f79bb7b435b05321651daefd374cdc681dc06faa65e374e38337b88ca046dea",
+                      "actualFileSize": 12,
+                      "evidenceId": "6f674949-c508-49bf-a160-ef720f9b51ee",
+                      "expectedContentSha256": "9ac0e4751fa6d0fca5082060cd44e943660f510cc4af096424b6396d52327262",
+                      "expectedFileSize": 25,
+                      "valid": false,
+                      "verifiedAt": "2026-07-30T09:15:00.123456Z"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrityVerificationResponse"
+                }
+              }
+            },
+            "description": "Verification completed; the stored content may conform or not",
+            "headers": {
+              "Location": {
+                "description": "Canonical URI of the appended custody event",
+                "required": true,
+                "schema": {
+                  "format": "uri",
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid evidence identifier"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence hidden or not found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Closed case or custody event concurrency conflict"
+          },
+          "500": {
+            "content": {
+              "application/problem+json": {
+                "examples": {
+                  "Stored file technically unreadable": {
+                    "description": "Stored file technically unreadable",
+                    "value": {
+                      "detail": "Evidence content is unavailable.",
+                      "instance": "/api/v1/evidences/6f674949-c508-49bf-a160-ef720f9b51ee/verify-integrity",
+                      "status": 500,
+                      "timestamp": "2026-07-30T09:15:00.123456Z",
+                      "title": "Evidence file unavailable",
+                      "type": "https://proofchain.dev/problems/evidence-file-unavailable"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Evidence file unavailable, storage failure, or custody event persistence failure; never a non-conforming result"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Verify the stored file of visible evidence",
+        "tags": [
+          "Digital evidence"
+        ]
+      }
+    },
+    "/api/v1/operators": {
+      "get": {
+        "description": "Returns a deterministic, allowlisted-sorted page of operators.",
+        "operationId": "listOperators",
+        "parameters": [
+          {
+            "description": "Zero-based page index",
+            "example": 0,
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Page size from 1 to 100",
+            "example": 20,
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Exactly one field,direction criterion",
+            "example": "username,asc",
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperatorPageResponse"
+                }
+              }
+            },
+            "description": "Operator page"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Validation error"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Access denied"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "List operators",
+        "tags": [
+          "operator-controller"
+        ]
+      },
+      "post": {
+        "description": "Creates an ACTIVE operator with a BCrypt password hash.",
+        "operationId": "createOperator",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOperatorRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperatorDetailResponse"
+                }
+              }
+            },
+            "description": "Operator created",
+            "headers": {
+              "Location": {
+                "description": "Canonical detail URI of the created operator",
+                "required": true,
+                "schema": {
+                  "format": "uri",
+                  "type": "string"
+                },
+                "style": "simple"
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Validation error"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Duplicate identity"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Create an operator",
+        "tags": [
+          "operator-controller"
+        ]
+      }
+    },
+    "/api/v1/operators/{id}": {
+      "get": {
+        "operationId": "getOperator",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperatorDetailResponse"
+                }
+              }
+            },
+            "description": "Operator details"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Invalid UUID"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Operator not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Get operator details",
+        "tags": [
+          "operator-controller"
+        ]
+      }
+    },
+    "/api/v1/operators/{id}/role": {
+      "patch": {
+        "operationId": "updateOperatorRole",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOperatorRoleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperatorDetailResponse"
+                }
+              }
+            },
+            "description": "Operator role updated"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Validation error"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Operator not found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Operator invariant or concurrent modification"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Update an operator role",
+        "tags": [
+          "operator-controller"
+        ]
+      }
+    },
+    "/api/v1/operators/{id}/status": {
+      "patch": {
+        "operationId": "updateOperatorStatus",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOperatorStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperatorDetailResponse"
+                }
+              }
+            },
+            "description": "Operator status updated"
+          },
+          "400": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Validation error"
+          },
+          "401": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Authentication required"
+          },
+          "403": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Access denied"
+          },
+          "404": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Operator not found"
+          },
+          "409": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description": "Operator invariant or concurrent modification"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Update an operator status",
+        "tags": [
+          "operator-controller"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "description": "Generated server url",
+      "url": "http://127.0.0.1:32769"
+    }
+  ],
+  "tags": [
+    {
+      "description": "Immutable custody-event timeline and detail APIs. Events cannot be created, updated or deleted through the public API.",
+      "name": "Custody events"
+    },
+    {
+      "description": "Custody case metadata, lifecycle, visibility, and membership APIs.",
+      "name": "Custody cases"
+    },
+    {
+      "description": "Digital evidence registration, metadata and content APIs.",
+      "name": "Digital evidence"
+    }
+  ]
+}
