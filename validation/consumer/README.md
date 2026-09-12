@@ -4,13 +4,23 @@ Isolated prerequisite validation, not the ProofChain application.
 
 ## Frozen provenance
 
-- Expo SDK 57: `expo 57.0.21`, `react-native 0.86.3`, `react 19.2.3`.
+- Expo SDK 57 execution candidate: `expo 57.0.22`, `react-native 0.86.3`, `react 19.2.3`.
 - UI: `@personal-library/react-native-components@0.1.0-rc.1` from npm only.
 - RC tag source: `b68a0124bb6201d00e6b55a88570723de645c06b`.
 - Integrity: `sha512-n+Cof418Xpzh8ru94iu8xA0HzJm/zxkvRWjOQec4pbITZuigNlBa1iYbSf83Hr1UbqRmvNtFCxG1GMfMRF1wAw==`.
 - Node >=22.13; validated with Node 24.19.0 / npm 11.9.0. Lockfile v3.
 
 The Expo 56/local tarball plan is superseded. The package remains pre-stable.
+
+### SDK patch reconciliation (2026-09-12)
+
+The initial owner-certified baseline was Expo 57.0.21. Remote CI run 34686607420
+failed because live Expo SDK metadata requires `~57.0.22` and `@types/jest 29.5.14`.
+IJPC-189 permits documented compatible patch adjustments. This consumer therefore
+pins Expo 57.0.22 and the requested Jest types and repeats the complete gate.
+There are no dependency-validation exclusions or offline validation switches.
+The original successful local 57.0.21 checks do not certify this newer candidate.
+CI on this PR records the final candidate's actual result, including Android export.
 
 ## Repeat the gate
 

@@ -34,4 +34,5 @@ jobs:
       - run: npx tsc --noEmit
       - run: npx expo lint
       - run: npm test -- --runInBand
+      - run: npx expo export --platform android --output-dir audit/android-export
       - run: git diff --check
