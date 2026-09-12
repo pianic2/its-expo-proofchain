@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "ProofChain registry consumer validation",
+    "slug": "proofchain-registry-consumer-validation",
+    "version": "1.0.0",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  }
+}
