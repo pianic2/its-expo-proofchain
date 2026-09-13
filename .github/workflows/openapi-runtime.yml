@@ -1,0 +1,45 @@
+name: Export pinned backend OpenAPI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/openapi-runtime.yml'
+      - 'scripts/export-openapi.sh'
+      - 'package.json'
+      - 'package-lock.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: openapi-runtime-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  export-openapi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out frontend
+        uses: actions/checkout@v4
+
+      - name: Check out pinned ProofChain backend
+        uses: actions/checkout@v4
+        with:
+          repository: pianic2/its-java-proofchain
+          ref: ad126eae26df22dacbae737b6c70c5492e47578e
+          path: .runtime/backend
+          persist-credentials: false
+
+      - name: Build runtime and export OpenAPI
+        run: scripts/export-openapi.sh .runtime/backend .runtime/artifact
+
+      - name: Upload runtime-generated contract
+        uses: actions/upload-artifact@v4
+        with:
+          name: proofchain-openapi-ad126eae
+          path: .runtime/artifact/
+          if-no-files-found: error
+          retention-days: 7
+

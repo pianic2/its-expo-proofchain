@@ -1,0 +1,2 @@
+backend_repository=pianic2/its-java-proofchain
+backend_commit=ad126eae26df22dacbae737b6c70c5492e47578e
