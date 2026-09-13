@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "ProofChain",
+    "slug": "its-expo-proofchain",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "proofchain",
+    "userInterfaceStyle": "automatic",
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "android": {
+      "package": "it.itsprodigi.proofchain"
+    }
+  }
+}
